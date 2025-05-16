@@ -1,0 +1,92 @@
+input{
+  border: 1rpx solid gray;
+  padding:15rpx 10px;
+  border-top-left-radius:15rpx ;
+  border-bottom-left-radius:15rpx ;
+width:70%;
+background-color: #fff;
+margin-left: 10px;
+}
+/*输入框*/
+.input_box{
+  position:fixed;
+  width:100%;
+  bottom:0rpx;
+  display:flex;
+  padding:16rpx 0rpx;
+  background-color: #f6f6f6;
+  
+}
+/*按钮*/
+.meau{
+background-color: #0066ff;
+color:#fff;
+font-size:10pt;
+text-align: center;
+display: flex;
+align-items: center;
+justify-content: center;
+border-top-right-radius:15rpx ;
+border-bottom-right-radius:15rpx ;
+width:20%;
+}
+.image{
+  width:80rpx;
+  height:80rpx;
+  border-radius: 10rpx;
+}
+.user{
+  
+  display: grid;/*垂直对齐*/
+  margin-right: 20rpx;
+  grid-template-columns: repeat(2,auto auto);/*第一列宽度为 80% 第二列宽度为100rpx。*/
+  align-self: flex-end;/*从右端排列*/
+}
+.assistant{
+  
+  display: grid;
+  margin-left:20rpx;
+  align-self: flex-start;
+  grid-template-columns: repeat(2,auto auto);/*第一列宽度为 100rpx 第二列宽度为 80%。*/
+}
+.message .item{
+  
+  display:flex;
+  flex-direction: column;/*弹性容器内的子元素会垂直排列*/
+  margin-bottom: 40rpx;/*每条对话之间的距离*/
+}
+.content{
+  
+  padding:18rpx;
+  font-size: 11pt;
+  border-radius: 10rpx;
+  max-width: 480rpx;
+  
+}
+.user .content{
+  margin-right:20rpx;
+  align-self: flex-start;
+  background-color:rgba(255,255,255,100);
+  
+}
+.assistant .content{
+  margin-left: 20rpx;
+  align-self: flex-start;/*每个对话框的文字气泡位于对话框的最上方*/
+  background-color:rgba(149,236,105,100);
+}
+.message{
+  margin:0rpx 10rpx 0rpx 10rpx;/*分别设置上、右、下、左四个边距*/
+  
+}
+Page{
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width:100%;
+  height:100vh;
+  position:fixed;
+  top:0;
+  left:0;
+  z-index: -1;
+  background-image: url('https://i0.hdslb.com/bfs/new_dyn/2ee20bcf8fa617ff15adbe1242176b6c458097807.jpg');
+}
