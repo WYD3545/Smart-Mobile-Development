@@ -78,7 +78,7 @@ width:20%;
   margin:0rpx 10rpx 0rpx 10rpx;/*分别设置上、右、下、左四个边距*/
   
 }
-Page{
+.page{
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

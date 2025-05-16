@@ -1,5 +1,8 @@
+<view class="page">
+
+</view>
 <!-- 对话内容 -->
-<view class="message">
+<view class="message" id="communication">
     <view style="height: 200rpx;"></view>
     <view class="item" wx:for="{{message}}" wx:key="index">
       <!-- 用户视图 -->
@@ -18,10 +21,12 @@
 
 </view>
 
-
+<!-- 占位操作 -->
+<view style="height: 100rpx;"></view>
 <!-- 底部输入框 -->
 <view class="input_box">
-  <input type="text" confirm-type="send" bindconfirm="submit" value="{{content}}" bindinput="getuserInput" placeholder="请输入内容"/>
+  <input type="text" confirm-type="send" bindconfirm="{{status==0?'submit':''}}" value="{{content}}" bindinput="getuserInput" placeholder="请输入内容"/>
   <!-- confirm-type="send"作用为设置键盘的确认按钮显示为“发送”（Send）。bindconfirm="submit"作用为绑定键盘按钮（如“发送”或回车键）被点击时的事件处理函数为submit。-->
-  <view class="meau" bindtap="submit">发送</view>
+  <view class="meau" wx:if="{{status==0}}" bindtap="{{'submit'}}">发送</view>
+  <view class="meau" wx:if="{{status==1}}" style="background-color: #7f7f7f;">发送</view>
 </view>
