@@ -4,35 +4,12 @@ Page({
    * 页面的初始数据
    */
   data: {
-    message:[
-      {
-        role:"user",
-        image:"./res/Soyo.png",
-        content:"你好"
-      },
-      {
-        role:"assistant",
-        image:"https://tse4-mm.cn.bing.net/th/id/OIP-C.gPmmDSJMbGZEXcbS9oP4egAAAA?rs=1&pid=ImgDetMain",
-        content:"如果你有什么问题，请随时向我提问"
-      },
-      {
-        role:"user",
-        image:"./res/Soyo.png",
-        content:"我在天津，周末可以去哪里玩？"
-      },
-      {
-        role:"assistant",
-        image:"https://tse4-mm.cn.bing.net/th/id/OIP-C.gPmmDSJMbGZEXcbS9oP4egAAAA?rs=1&pid=ImgDetMain",
-        content:"天津是一个充满文化底蕴的城市，有很多适合周末游玩的地方，以下是几个值得推荐的地方 天津市南开大学 南开大学是天津最好的大学，也是周总理的母校。"
-      },
-      {
-        role:"user",
-        image:"./res/Soyo.png",
-        content:"你真厉害啊"
-      },
-    ],
+    message:[],
+    message2:[],
     content:"",
-    status:0//0表示用户可以发送 1表示用户不可以发送
+    status:0,//0表示用户可以发送 1表示用户不可以发送
+    access_token:"",
+    prompt:"每次回答不能超过100字"
   },
   //获取用户输入内容
   getuserInput(e){
@@ -45,6 +22,8 @@ Page({
   submit(){
     let content=this.data.content;
     let message=this.data.message;
+    let message2=this.data.message2;
+    let prompt=this.data.prompt;
     if(!content){
       wx.showToast({
         title: '请输入内容',
@@ -52,71 +31,172 @@ Page({
       })
       return;
     }
+
+    //将提示词和用户输入的内容拼接后发送给大模型
     message.push({
+      role:"user",
+      content:`${prompt}\n${content}`
+    },)
+    message2.push({
       role:"user",
       image:"./res/Soyo.png",
       content
     },)
     wx.setStorageSync('message', message)
+    wx.setStorageSync('message2', message2)
     this.setData({
       message,
+      message2,
       content:""//发送之后清空输入框
     })
     this.autoScroll()//每次发送时调用一次,自动滚动最下方
-
+    
     this.sendRequest(message)
   },
+  
   //发送网络请求，从AI获取内容
   //content为本次用户请求内容
   //message为历史对话
   sendRequest(message){
+    let message2=this.data.message2
+    let access_token=this.data.access_token
+    wx.showLoading({
+      title:''
+    })
     this.setData({
       status:1
     })
-      let content="天津是一个充满文化底蕴的城市，有很多适合周末游玩的地方，以下是几个值得推荐的地方 天津市南开大学 南开大学是天津最好的大学，也是周总理的母校。"
+    wx.request({
+      url: `https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/ernie-3.5-8k-0701?access_token=${access_token}`,
+      method:"POST",
+      header:{
+        "Content-Type":"application/json"
+      },
+      data:JSON.stringify({
+        messages: message // 确保 messages 是一个有效的 JSON 对象
+      }),
+      success:(res=>{
+        if(res.data.error_code){
+          wx.hideLoading()//结束加载框
+          wx.showToast({
+            title: '错误，请重试',
+            icon:'error'
+          })
+        }
+        console.log('res',res);
+        wx.hideLoading()//结束加载框
+      let content=res.data.result
       let index=0;
-      message.push({
+      message2.push({
         role:"assistant",
         image:"https://tse4-mm.cn.bing.net/th/id/OIP-C.gPmmDSJMbGZEXcbS9oP4egAAAA?rs=1&pid=ImgDetMain",
         content:""
       },)
       let time=setInterval(()=>{
-        message[message.length-1].content=content.substring(0,++index);
+        message2[message2.length-1].content=content.substring(0,++index);
           this.setData({
-            message,
-            
+            message2,
+            message
           })
           this.autoScroll()
         // console.log(content.substring(0,++index));
         if(index==content.length){
+
+          wx.setStorageSync('message2', message2)
+          message.push({
+            role:"assistant",
+            content:message2[message2.length-1].content
+          },)
           wx.setStorageSync('message', message)
+
           clearInterval(time)
           this.setData({
             status:0
           })
         }
       },100);
+      }),
+      fail:(err=>{
+        wx.hideLoading()//结束加载框
+        wx.showToast({
+          title: '错误，请重试',
+          icon:'error'
+        })
+        console.log('err',err);
+      })
+
+    })
+    return
+      
 
     
+  },
+
+  //  复制对话
+  copy(e){
+    let content=e;
+    console.log(content);
   },
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    // let content="天津是一个充满文化底蕴的城市，有很多适合周末游玩的地方，以下是几个值得推荐的地方 天津市南开大学 南开大学是天津最好的大学，也是周总理的母校。"
-    // let index=0;
-    // let time=setInterval(()=>{
-    //   console.log(content,substring(0,++index));
-    // },1000);
+    
     let message=wx.getStorageSync('message')//从缓存获取历史聊天记录
+    let message2=wx.getStorageSync('message2')
     if(message){//存在缓存
-      
       this.setData({
-        message
+        message,
+      })
+    }
+    if(message2){//存在缓存
+      this.setData({
+        message2,
       })
     }
     this.autoScroll()//每次进入时调用一次
+    if(wx.getStorageSync('tokenData')){//如果有缓存，则不用getToken()
+      let tokenData=wx.getStorageSync('tokenData')
+      if(tokenData.expires_in<29.5*24*60*60){
+        this.getToken()
+      }else{
+        this.setData({
+          access_token:tokenData.access_token
+        })
+      }
+    }
+    else{
+      this.getToken()
+    }
+    
   },
+  getToken(){
+    let grant_type="client_credentials"
+    let client_id="0VstIqkuw0PkN1AGkoZQkteb"
+    let client_secret="yAkeyvSmtJELmBG5QK6tbuHxkWGrb7Rh"
+    wx.request({
+      url:`https://aip.baidubce.com/oauth/2.0/token?grant_type=${grant_type}&client_id=${client_id}&client_secret=${client_secret}`,
+      method:"POST",
+      header:{
+        "Content-Type":"application/json"
+      },
+      success:(res=>{
+        let tokenData={
+          access_token:res.data.access_token,
+          expires_in:res.data.expires_in//access_token和时间
+        }
+        this.setData({
+          access_token:res.data.access_token
+        })
+        wx.setStorageSync('tokenData', tokenData)
+      }),
+      fail:(err=>{
+        console.log('err');
+      })
+    })
+  },
+
+
   //滚动到底部
   autoScroll(){
     let that=this;

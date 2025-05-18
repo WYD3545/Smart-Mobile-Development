@@ -4,7 +4,7 @@
 <!-- 对话内容 -->
 <view class="message" id="communication">
     <view style="height: 200rpx;"></view>
-    <view class="item" wx:for="{{message}}" wx:key="index">
+    <view class="item" wx:for="{{message2}}" wx:key="index">
       <!-- 用户视图 -->
       <view class="user" wx:if="{{item.role=='user'}}">
         <view class="content">{{item.content}}</view>
