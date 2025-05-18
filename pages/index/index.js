@@ -9,7 +9,8 @@ Page({
     content:"",
     status:0,//0表示用户可以发送 1表示用户不可以发送
     access_token:"",
-    prompt:"每次回答不能超过100字"
+    prompt:"每次回答不能超过100字",
+    meauList:['请你做个自我介绍','清空对话记录']
   },
   //获取用户输入内容
   getuserInput(e){
@@ -131,11 +132,44 @@ Page({
 
     
   },
-
+  //功能按钮选择
+  chooseMeau(e){
+    let type=e.currentTarget.dataset.type
+    switch(type){
+      case '清空对话记录':{
+        wx.showModal({
+          title: '确认清除历史对话',
+          complete: (res) => {
+            if (res.confirm) {
+              wx.removeStorageSync('message')
+              wx.removeStorageSync('message2')
+              this.onLoad()
+            }
+          }
+        })
+        break;
+      }
+      default:{
+        this.setData({
+          content:type
+        })
+        this.submit()
+      }
+        
+    }
+  },
   //  复制对话
   copy(e){
-    let content=e;
-    console.log(content);
+    let content=e.currentTarget.dataset.content;
+    // console.log(content);
+    wx.setClipboardData({
+      data: content,
+      success(res){
+        wx.showToast({
+          title: '已复制',
+        })
+      }
+    })
   },
   /**
    * 生命周期函数--监听页面加载
@@ -148,10 +182,18 @@ Page({
       this.setData({
         message,
       })
+    }else{
+      this.setData({
+        message:[]
+      })
     }
     if(message2){//存在缓存
       this.setData({
         message2,
+      })
+    }else{
+      this.setData({
+        message2:[]
       })
     }
     this.autoScroll()//每次进入时调用一次

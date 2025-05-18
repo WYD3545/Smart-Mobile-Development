@@ -30,6 +30,24 @@ border-top-right-radius:15rpx ;
 border-bottom-right-radius:15rpx ;
 width:20%;
 }
+
+/*底部功能按钮框*/
+.meau_list{
+  position:fixed;
+  width:100%;
+  bottom: 130rpx;              
+  display:flex;
+  margin-left: 20rpx;
+}
+.meau_item{
+  padding:20rpx;
+  background-color: white;
+  margin-right:20rpx;
+  border-radius: 35rpx;
+  color:#FF0088;
+  font-size:10pt;
+  font-weight: bold;
+}
 .image{
   width:80rpx;
   height:80rpx;
@@ -60,7 +78,7 @@ width:20%;
   padding:18rpx;
   font-size: 11pt;
   border-radius: 10rpx;
-  max-width: 480rpx;
+  max-width: 460rpx;
   
 }
 .user .content{
@@ -78,7 +96,7 @@ width:20%;
   margin:0rpx 10rpx 0rpx 10rpx;/*分别设置上、右、下、左四个边距*/
   
 }
-Page{
+.page{
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

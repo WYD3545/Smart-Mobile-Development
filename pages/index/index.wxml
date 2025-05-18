@@ -7,7 +7,7 @@
     <view class="item" wx:for="{{message2}}" wx:key="index">
       <!-- 用户视图 -->
       <view class="user" wx:if="{{item.role=='user'}}">
-        <view class="content">{{item.content}}</view>
+        <view class="content" bindtap="copy" data-content="{{item.content}}">{{item.content}}</view>
         <image class="image" src="{{item.image}}" mode=""/>
         
       </view>
@@ -15,14 +15,23 @@
       <view class="assistant" wx:if="{{item.role=='assistant'}}">
         
         <image class="image" src="{{item.image}}" mode=""/>
-        <view class="content">{{item.content}}</view>
+        <view class="content" bindtap="copy" data-content="{{item.content}}">{{item.content}}</view>
       </view>
     </view>
 
 </view>
 
 <!-- 占位操作 -->
-<view style="height: 100rpx;"></view>
+<view style="height: 190rpx;"></view>
+
+<!-- 功能按钮 -->
+<view class="meau_list">
+  <view class="meau_item" bindtap="chooseMeau" data-type="{{item}}" wx:for="{{meauList}}" wx:key="index">
+    {{item}}
+  </view>
+</view>
+
+
 <!-- 底部输入框 -->
 <view class="input_box">
   <input type="text" confirm-type="send" bindconfirm="{{status==0?'submit':''}}" value="{{content}}" bindinput="getuserInput" placeholder="请输入内容"/>
